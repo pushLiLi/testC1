@@ -1,125 +1,213 @@
 #include<stdio.h>
-#include <wingdi.h>
-#define MAXSIZE 100 //æœ€å¤§é•¿åº¦
-#define OK 1
-#define ERROR 0
-typedef int ElemType ; //é¡ºåºè¡¨Lå®šä¹‰
-typedef struct {
-    ElemType elem[MAXSIZE]; //çº¿æ€§è¡¨å ç”¨çš„æ•°ç»„ç©ºé—´
-    int last;   //æœ€åä¸€ä¸ªå…ƒç´ åœ¨æ•°ç»„ä¸­çš„ä¸‹æ ‡, ç©ºè¡¨ä¸º-1
-}SeqList;
+#include <malloc.h>
 
-//è‡ªå®šä¹‰è¾“å…¥å‡½æ•°ï¼Œç»™é¡ºåºè¡¨èµ‹åˆå€¼ï¼šåŒ…å«12, 10, 60, 30, 11, 17, 80ç­‰å…ƒç´ 
-/*åœ¨é¡ºåºè¡¨Lä¸­ç¬¬iä¸ªæ•°æ®å…ƒç´ ä¹‹å‰æ’å…¥ä¸€ä¸ªå…ƒç´ eã€‚
-æ’å…¥å‰è¡¨é•¿n=L->last+1ï¼Œ içš„åˆæ³•å–å€¼èŒƒå›´æ˜¯ 1â‰¤iâ‰¤L->last+2 */
-int n;
-void InsertIntoSeqElement (SeqList *list) {
-    int i = 0;
-    printf("è¾“å…¥æ’å…¥çš„å…ƒç´ çš„æ•°é‡ï¼š");
-    scanf("%d",&n);
-    list->last = n;
-    printf("\nè¾“å…¥ä½ è¦æ’å…¥çš„å…ƒç´ ï¼š\n");
-    while (i < n) {
-        scanf("%d",&list->elem[i]);
-        i++;
+typedef  struct LinkList {
+    int data;
+    struct LinkList *next;
+}Node,*LinkList;
+
+void init_linklist(LinkList *l){
+    //¿ÕÁ´±íL¶¨Òå³õÊ¼»¯£¨ÀûÓÃÁ´±í³õÊ¼»¯º¯Êı£©
+    *l=(LinkList)malloc(sizeof(Node));
+    (*l)->next=NULL;
+}
+
+void CreateFromHead(LinkList L){
+    //¸øÁ´±í¸³³õÖµ£º°üº¬5¸öÒÔÉÏÈÎÒâÕûÊı£¨ÀûÓÃÍ·²å·¨»òÎ²²å·¨
+    Node  *s;
+    char c;
+    int flag=1;
+    while(flag){   /* flag³õÖµÎª1£¬µ±ÊäÈë"$"Ê±£¬ÖÃflagÎª0£¬½¨±í½áÊø*/
+        c = getchar();
+        if(c!='$'){
+            s = (Node*)malloc(sizeof(Node)); /*½¨Á¢ĞÂ½áµãs*/
+            s -> data = c;
+            s -> next = L->next;/*½«s½áµã²åÈë±íÍ·*/
+            L -> next = s;
+        }
+        else
+            flag = 0;
     }
+    printf("\n");
 }
 
-void OutputSeqElement(SeqList *list) {
-    printf("è¾“å‡ºçš„å¾ªåºè¡¨å¦‚ä¸‹ï¼š\n");
-    for (int i = 0 ; i < n ;++i) {
-        printf("%d ",list->elem[i]);
-    }
-}
-
-void PrintLengthOfSeqTables () {
-    printf("é¡ºåºè¡¨çš„é•¿åº¦ä¸ºï¼š%d\n",n);
-}
-
-void PrintGivenIndexElement (SeqList *list) {
-    int index;
-    printf("è¾“å…¥è¦æ‰“å°ç¬¬å‡ ä¸ªå…ƒç´ \n");
-    scanf("%d",&index);
-    printf("%d\n",list->elem[--index]);
-}
-
-int Locate(SeqList *L, ElemType e){
-    int i = 0;
-    /*iä¸ºæ‰«æè®¡æ•°å™¨ï¼Œåˆå€¼ä¸º0ï¼Œå³ä»ç¬¬ä¸€ä¸ªå…ƒç´ å¼€å§‹æ¯”è¾ƒ*/
-    while ((i <= L->last)&&(L->elem[i] != e))/*é¡ºåºæ‰«æè¡¨ï¼Œç›´åˆ°æ‰¾åˆ°å€¼ä¸ºkeyçš„å…ƒç´ , æˆ–æ‰«æåˆ°è¡¨å°¾è€Œæ²¡æ‰¾åˆ°*/
-        i++;
-    if (i <= L->last)
-        return(i+1); /*è‹¥æ‰¾åˆ°å€¼ä¸ºeçš„å…ƒç´ ï¼Œåˆ™è¿”å›å…¶åºå·*/
-    else
-        return(-1); /*è‹¥æ²¡æ‰¾åˆ°ï¼Œåˆ™è¿”å›ç©ºåºå·*/
-}
-
-/*åœ¨é¡ºåºè¡¨Lä¸­ç¬¬iä¸ªæ•°æ®å…ƒç´ ä¹‹å‰æ’å…¥ä¸€ä¸ªå…ƒç´ eã€‚
-æ’å…¥å‰è¡¨é•¿n=L->last+1ï¼Œ içš„åˆæ³•å–å€¼èŒƒå›´æ˜¯ 1â‰¤iâ‰¤L->last+2 */
-int InsList(SeqList *L,int i,ElemType e) {
-    int k;
-    if((i < 1) || (i > L->last+2)) /*é¦–å…ˆåˆ¤æ–­æ’å…¥ä½ç½®æ˜¯å¦åˆæ³•*/
+void CreateFromTail(LinkList L)
+{
+    Node *r, *s;
+    char c;
+    int   flag =1; /*ÉèÖÃÒ»¸ö±êÖ¾£¬³õÖµÎª1£¬µ±ÊäÈë"$"Ê±£¬flagÎª0£¬½¨±í½áÊø*/
+    r=L;                /*rÖ¸Õë¶¯Ì¬Ö¸ÏòÁ´±íµÄµ±Ç°±íÎ²£¬ÒÔ±ãÓÚ×öÎ²²åÈë£¬Æä³õÖµÖ¸ÏòÍ·½áµã*/
+    while(flag)         /*Ñ­»·ÊäÈë±íÖĞÔªËØÖµ£¬½«½¨Á¢ĞÂ½áµãs²åÈë±íÎ²*/
     {
-        printf("æ’å…¥ä½ç½®iå€¼ä¸åˆæ³•");
-        return (ERROR);
+        c=getchar();
+        if(c!='$')
+        {
+            s=(Node*)malloc(sizeof(Node));
+            s->data=c;
+            r->next=s;
+            r=s;
+        }
+        else
+        {
+            flag=0;
+            r->next=NULL;   /*½«×îºóÒ»¸ö½áµãµÄnextÁ´ÓòÖÃÎª¿Õ£¬±íÊ¾Á´±íµÄ½áÊø*/
+        }
     }
-    if(L->last >= MAXSIZE-1) {
-        printf("è¡¨å·²æ»¡æ— æ³•æ’å…¥");
-        return(ERROR);
-    }
-    for(k=L->last;k>=i-1;k--) /*ä¸ºæ’å…¥å…ƒç´ è€Œç§»åŠ¨ä½ç½®*/
-        L->elem[k+1]=L->elem[k];
-    L->elem[i-1]=e; /*åœ¨Cè¯­è¨€æ•°ç»„ä¸­ï¼Œç¬¬iä¸ªå…ƒç´ çš„ä¸‹æ ‡ä¸ºi-1*/
-    L->last++;
-    n++;
-    return (OK);
 }
 
-int DelList(SeqList *L,int i,ElemType *e) {
-    /*åœ¨é¡ºåºè¡¨Lä¸­åˆ é™¤ç¬¬iä¸ªæ•°æ®å…ƒç´ ï¼Œå¹¶ç”¨æŒ‡é’ˆå‚æ•°eè¿”å›å…¶å€¼ã€‚içš„åˆæ³•å–å€¼ä¸º1â‰¤iâ‰¤L.last+1 */
-    int k;
-    if((i < 1)||(i > L->last+1)) {
-        printf("åˆ é™¤ä½ç½®ä¸åˆæ³•!");
-        return(ERROR);
+
+void PrintList(LinkList head) {
+    Node *cur =  head->next;
+    printf("ÏÖÔÚµÄº¯ÊıÎª£º");
+    while(cur != NULL) {
+        printf("%d ",cur->data-'0');
+        cur = cur->next;
     }
-    *e = L->elem[i-1]; /* å°†åˆ é™¤çš„å…ƒç´ å­˜æ”¾åˆ°eæ‰€æŒ‡å‘çš„å˜é‡ä¸­*/
-    for(k=i; k<=L->last; k++)
-        L->elem[k-1] = L->elem[k]; /*å°†åé¢çš„å…ƒç´ ä¾æ¬¡å‰ç§»*/
-    L->last--;
-    n--;
-    return(OK);
+    printf("\n");
+}
+
+void PrintListLength(LinkList head) {
+    int ans = 0;
+    Node* cur = head->next;
+    while (cur != NULL) {
+        ans++;
+        cur = cur->next;
+    }
+    printf("µ±Ç°ÁĞ±íµÄ³¤¶ÈÎª:%d \n",ans);
+}
+
+Node * Get (LinkList  L, int i)
+/*ÔÚ´øÍ·½áµãµÄµ¥Á´±íLÖĞ²éÕÒµÚi¸ö½áµã£¬ÈôÕÒµ½(1¡Üi¡Ün)£¬Ôò·µ»Ø¸Ã½áµãµÄ´æ´¢Î»ÖÃ; ·ñÔò·µ»ØNULL*/
+{
+    int j;
+    Node  *p;
+    p=L;
+    j=0;   /*´ÓÍ·½áµã¿ªÊ¼É¨Ãè*/
+    while ((p->next!=NULL)&&(j<i))
+    {
+        p=p->next;    /* É¨ÃèÏÂÒ»½áµã*/
+        j++;   /* ÒÑÉ¨Ãè½áµã¼ÆÊıÆ÷ */
+    }
+    if(i == j)
+        return p;   /* ÕÒµ½ÁËµÚi¸ö½áµã */
+    else
+        return NULL;   /* ÕÒ²»µ½£¬i¡Ü0»òi>n */
+}
+
+int step = 0;
+Node *Locate( LinkList L,int key)
+/*ÔÚ´øÍ·½áµãµÄµ¥Á´±íLÖĞ²éÕÒÆä½áµãÖµµÈÓÚkeyµÄ½áµã£¬ÈôÕÒµ½Ôò·µ»Ø¸Ã½áµãµÄÎ»ÖÃp£¬·ñÔò·µ»ØNULL*/
+{
+    Node *p;
+    p=L->next;    /*´Ó±íÖĞµÚÒ»¸ö½áµã¿ªÊ¼ */
+    step = 0;
+    while (p!=NULL)
+    {
+        step++;
+        if (p->data == key) {
+            p->data = key; //ÕâÀïÊÇ½èÓÃp½áµãµÄdataÕÒµ½´¦ÓÚµÚ¼¸¸öÎ»ÖÃ
+            return p ;
+        }
+        p = p->next;
+
+    }
+    return NULL;
+}
+
+int InsList(LinkList L,int i,int e)
+/*ÔÚ´øÍ·½áµãµÄµ¥Á´±íLÖĞµÚi¸öÎ»ÖÃ²åÈëÖµÎªeµÄĞÂ½áµãs*/
+{
+    Node *pre,*s;
+    int k;
+    pre = L;
+    k = 0;                     /*´Ó"Í·"¿ªÊ¼£¬²éÕÒµÚi-1¸ö½áµã*/
+    while(pre!=NULL&& k < i - 1)  /*±íÎ´²éÍêÇÒÎ´²éµ½µÚi-1¸öÊ±ÖØ¸´£¬ÕÒµ½preÖ¸ÏòµÚi-1¸ö*/
+    {
+        pre = pre -> next;
+        k = k + 1;
+    }									/*²éÕÒµÚi-1½áµã*/
+    if(!pre)      /*Èçµ±Ç°Î»ÖÃpreÎª¿Õ±íÒÑÕÒÍê»¹Î´Êıµ½µÚi¸ö£¬ËµÃ÷²åÈëÎ»ÖÃ²»ºÏÀí*/
+    {
+        printf("²åÈëÎ»ÖÃ²»ºÏÀí!");
+        return 0;
+    }
+    s=(Node*)malloc(sizeof(Node));   /*ÉêÇëÒ»¸öĞÂµÄ½áµãS */
+    s->data=e;                       /*ÖµeÖÃÈësµÄÊı¾İÓò*/
+    s->next=pre->next;				/*ĞŞ¸ÄÖ¸Õë£¬Íê³É²åÈë²Ù×÷*/
+    pre->next=s;
+    return 1;
+}
+
+int DelList(LinkList L,int i,int *e)
+/*ÔÚ´øÍ·½áµãµÄµ¥Á´±íLÖĞÉ¾³ıµÚi¸öÔªËØ£¬²¢½«É¾³ıµÄÔªËØ±£´æµ½±äÁ¿*eÖĞ*/
+{
+    Node *pre,*r;
+    int k;
+    pre = L;
+    k = 0;
+    while(pre->next!=NULL && k<i-1)	/*Ñ°ÕÒ±»É¾³ı½áµãiµÄÇ°Çı½áµãi-1Ê¹pÖ¸ÏòËü*/
+    {
+        pre=pre->next;
+        k=k+1;
+    }								/*²éÕÒµÚi-1¸ö½áµã*/
+    if(!(pre->next))     /* ¼´whileÑ­»·ÊÇÒòÎªp->next=NULL»òi<1¶øÌø³öµÄ,¶øÊÇÒòÎªÃ»ÓĞÕÒµ½ºÏ·¨µÄÇ°ÇıÎ»ÖÃ£¬ËµÃ÷É¾³ıÎ»ÖÃi²»ºÏ·¨¡£*/
+    {
+        printf("É¾³ı½áµãµÄÎ»ÖÃi²»ºÏÀí!");
+        return 0;
+    }
+    r=pre->next;
+    pre->next=pre->next->next;    /*ĞŞ¸ÄÖ¸Õë£¬É¾³ı½áµãr*/
+    *e = r->data;
+    free(r);    /*ÊÍ·Å±»É¾³ıµÄ½áµãËùÕ¼µÄÄÚ´æ¿Õ¼ä*/
+    printf("³É¹¦É¾³ı½áµã!");
+    return 1;
 }
 
 int main () {
-    //init
-    SeqList list;
-    //è‡ªå®šä¹‰è¾“å…¥å‡½æ•°ï¼Œç»™é¡ºåºè¡¨èµ‹åˆå€¼ï¼šåŒ…å«12, 10, 60, 30, 11, 17, 80ç­‰å…ƒç´ 
-    InsertIntoSeqElement(&list);
-    //è‡ªå®šä¹‰è¾“å‡ºå‡½æ•°ï¼Œ æ‰“å°å‡ºé¡ºåºè¡¨L
-    OutputSeqElement(&list);
-    //æ‰“å°å‡ºé¡ºåºè¡¨çš„é•¿åº¦ï¼š7
-    PrintLengthOfSeqTables();
-    //æ‰“å°å‡ºçº¿æ€§è¡¨ç¬¬3ä¸ªå…ƒç´ ï¼š60
-    PrintGivenIndexElement(&list);
-    //è°ƒç”¨ç»™å®šå‡½æ•°ï¼Œæ‰“å°å‡º12çš„ä½ç½®ï¼š1
-    printf("è¾“å…¥è¦æŸ¥æ‰¾çš„å…ƒç´ \n");
+    LinkList head;       //ÊµÀı»¯
+    init_linklist(&head);
+    printf("³õÊ¼»¯Íê³É\n");
+
+    printf("Í·²åÈë£¬¿ªÊ¼ÊäÈëÁĞ±íµÄÖµ£º");
+    CreateFromHead(head);
+    PrintList(head);
+
+    PrintListLength(head);
+
+//    printf("Î²²åÈë£¬¿ªÊ¼ÊäÈëÁĞ±íµÄÖµ£º");
+//    CreateFromTail(head);
+//    PrintList(head);
+//
+//    PrintListLength(head);
+
+    printf("ÊäÈëÄãÒª²éÕÒµÚ¼¸¸öÔªËØ:");
+    int i;
+    scanf("%d",&i);
+    Node* node = Get(head,i);
+    printf("ÄãÖ¸¶¨µÄµÚ%d¸öÔªËØµØÖ·Îª: %p ,ÖµÎª£º%d\n",i,node,node->data - '0');
+
+    printf("ÊäÈëÄãÒª²éÕÒµÄÔªËØµÄÖµ:");
+    int v;
+    scanf("%d",&v);
+    Node* node1 = Locate(head,v + '0');
+    if (node1 == NULL) {
+        printf("Ã»ÓĞÕÒµ½ÄãÖ¸¶¨µÄ½áµã\n");
+    } else {
+        printf("ÄãÖ¸¶¨µÄÖµÎª:%dµÄ½áµãµÄµØÖ·Îª:%p,ÔÚÁ´±íµÄµÚ%d¸öÎ»ÖÃ\n",v,node1,step);
+    }
+
+    printf("\nÇëÊäÈëÄúÏëÔÚµÚ¼¸¸öÔªËØÇ°²åÈë:");
+    scanf("%d",&i);
+    printf("ÖµÎª:");
+    scanf("%d",&v);
+    InsList(head,i,v+'0');
+    PrintList(head);
+
+    printf("ÊäÈëÄãÏëÉ¾³ıµÚ¼¸¸ö½áµã:");
+    scanf("%d",&i);
     int e;
-    scanf("%d",&e);
-    printf("å€¼ä¸ºï¼š%dçš„ä¸‹æ ‡ä¸ºï¼š%d\n",e,Locate(&list,e));
-    //è°ƒç”¨ç»™å®šå‡½æ•°ï¼Œåœ¨å€¼ä¸º60çš„æ•°æ®å‰æ’å…¥å…ƒç´ 999
-    printf("è¾“å…¥ä½ è¦åœ¨ ? å…ƒç´ ä¹‹å‰æ’å…¥ï¼š\n");
-    scanf("%d",&e);
-    int index = Locate(&list,e);
-    printf("è¾“å…¥ä½ è¦æ’å…¥çš„å…ƒç´ :\n");
-    scanf("%d",&e);
-    InsList(&list,index ,e);
-    //æ‰“å°å‡ºçº¿æ€§è¡¨ï¼š 12 10 999 60 30 11 17 80
-    OutputSeqElement(&list);
-    //è°ƒç”¨ç»™å®šå‡½æ•°ï¼Œåˆ é™¤Lçš„ç¬¬4ä¸ªå…ƒç´ 
-    printf("\nè¾“å…¥ä½ è¦åˆ é™¤ç¬¬ ? ä¸ªå…ƒç´ :\n");
-    int a;
-    scanf("%d",&a);
-    DelList(&list,a,&e);
-    //æ‰“å°å‡ºçº¿æ€§è¡¨L
-    OutputSeqElement(&list);
+    DelList(head,3,&e);
+    printf("\nÄãÉ¾³ıµÄ½áµãµÄÖµÎª:%d:",e);
+    printf("\nµ±Ç°Á´±íÎª:");
+    PrintList(head);
 }

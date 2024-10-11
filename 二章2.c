@@ -1,4 +1,3 @@
-
 #include<stdio.h>
 #include <malloc.h>
 
@@ -52,6 +51,7 @@ int main() {
     //实例化，赋值
     LinkList head;
     init_linklist(&head);
+    printf("输入值:");
     CreateFromTail(head);
 
     //找最大值
@@ -60,6 +60,7 @@ int main() {
     while (cur != NULL) {
         if (cur->data > v) {
             a = cur->data;
+            v = a;
         }
         cur = cur->next;
     }
@@ -76,5 +77,6 @@ int main() {
     free(d);
 
     PrintList(head);
+   
 
 }
